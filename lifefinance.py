@@ -26,20 +26,18 @@ def lifefinance_scrap(current_dir, href, stop_date, dict_for_traders):
     driver.maximize_window()
     driver.get(href.value)
     print(f'Успешно перешел по ссылке {href.value}\n')
-    WebDriverWait(driver, 60).until(
+    WebDriverWait(driver, 20).until(
         ec.presence_of_element_located(
-            ("xpath", fr'//div[@class = "page_header_part"]//h2'))
+            ("xpath", fr'//div[@class = "page_header_part traders_body"]//h2'))
     )
-    name = remove_special_chars(driver.find_element("xpath", fr'//div[@class = "page_header_part"]//h2').text)
+    name = remove_special_chars(driver.find_element("xpath", fr'//div[@class = "page_header_part traders_body"]//h2').text)
     print(f'Имя трейдера = {name}\n')
-    count = 0
     count_on_page = 1
-    for o in (range(2, 50)):
+    for o in range(1, 40):
         time.sleep(2)
-        while count == 0:
-            count = len(driver.find_elements("xpath", fr'//div[@class = "content_row"]'))
-        print(f'Начинаю обработку {count} записей на странице {o - 1}\n')
-        for l in list(range(count_on_page, count + 1)):
+        count = len(driver.find_elements("xpath", fr'//div[@class = "content_row"]'))
+        print(f'Начинаю обработку c {count_on_page} по {count} запись на странице {o}\n')
+        for l in range(count_on_page, count + 1):
             currency = driver.find_element("xpath",
                                            fr'(//div[@class = "content_row"])[{l}]/descendant::a[2]').text
             if currency is not None:
@@ -89,7 +87,7 @@ def lifefinance_scrap(current_dir, href, stop_date, dict_for_traders):
                     points,
                     href.value
                 ]
-        count_on_page += 1
+            count_on_page += 1
         # Если количечество сделок меньше 50 на странице - остановить обработку
         if count % 50 != 0:
             break

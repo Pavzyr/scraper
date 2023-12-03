@@ -25,7 +25,7 @@ def forex4you_scrap(current_dir, href, months_in_numbers, stop_date, dict_for_tr
     driver.maximize_window()
     driver.get(href.value)
     print(f'Успешно перешел по ссылке {href.value}\n')
-    WebDriverWait(driver, 60).until(
+    WebDriverWait(driver, 20).until(
         ec.presence_of_element_located(
             ("xpath", fr'//span[@data-ng-bind= "::$headerCtrl.leader.displayName"]'))
     )

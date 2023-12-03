@@ -172,18 +172,13 @@ class Scraper:
 
 class Litefinance(Scraper):
     def site_scrap(self, init_dict):
-        count = 0
         count_on_page = 1
         for o in (range(1, 40)):
             time.sleep(2)
-            while count == 0:
-                count = len(self.driver.find_elements(
-                    "xpath",
-                    fr'//div[@class = "content_row"]')
-                )
-            print(f'Начинаю обработку {count} записей на странице {o}\n')
+            count = len(self.driver.find_elements("xpath", fr'//div[@class = "content_row"]'))
+            print(f'Начинаю обработку c {count_on_page} по {count} запись на странице {o}\n')
 
-            for l in list(range(count_on_page, count + 1)):
+            for l in range(count_on_page, count + 1):
                 currency = self.driver.find_element(
                     "xpath",
                     fr'(//div[@class = "content_row"])[{l}]/descendant::a[2]'
@@ -268,7 +263,7 @@ class Litefinance(Scraper):
                     })
                     init_dict['df_for_trader'].loc[
                         len(init_dict['df_for_trader'])] = new_row
-            count_on_page += 1
+                count_on_page += 1
             # Если количечество сделок меньше 50 на странице - остановить обработку
             if count % 50 != 0:
                 break
