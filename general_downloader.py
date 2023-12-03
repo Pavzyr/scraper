@@ -170,22 +170,20 @@ class Scraper:
         self.htm_save(init_dict, scrap_results)
 
 
-class Lifefinance(Scraper):
+class Litefinance(Scraper):
     def site_scrap(self, init_dict):
-
+        count = 0
+        count_on_page = 1
         for o in (range(1, 40)):
             time.sleep(2)
-            count = 0
             while count == 0:
                 count = len(self.driver.find_elements(
                     "xpath",
                     fr'//div[@class = "content_row"]')
                 )
             print(f'Начинаю обработку {count} записей на странице {o}\n')
-            itter = 49
-            if count < 50:
-                itter = count-1
-            for l in list(range(count - itter, count + 1)):
+
+            for l in list(range(count_on_page, count + 1)):
                 currency = self.driver.find_element(
                     "xpath",
                     fr'(//div[@class = "content_row"])[{l}]/descendant::a[2]'
@@ -270,6 +268,8 @@ class Lifefinance(Scraper):
                     })
                     init_dict['df_for_trader'].loc[
                         len(init_dict['df_for_trader'])] = new_row
+            count_on_page += 1
+            # Если количечество сделок меньше 50 на странице - остановить обработку
             if count % 50 != 0:
                 break
             self.driver.execute_script(
@@ -447,7 +447,7 @@ def run_main():
             make_hrefs_list(bd_dir + r'\litefinance hrefs.xlsx'),
             make_hrefs_list(bd_dir + r'\forex4you hrefs.xlsx')
         ]
-        lifefinance_xpathes = {
+        litefinance_xpathes = {
             'trader_name': fr'//div[@class = "page_header_part traders_body"]//h2'
         }
         forex4you_xpathes = {
@@ -476,13 +476,13 @@ def run_main():
                     )
                     forex4you.scrap_all()
                 elif 'litefinance' in href.value:
-                    litefinance = Lifefinance(
+                    litefinance = litefinance(
                         current_dir,
                         bd_dir,
                         driver,
                         href,
                         'litefinance',
-                        lifefinance_xpathes
+                        litefinance_xpathes
                     )
                     litefinance.scrap_all()
         driver.quit()
@@ -505,7 +505,7 @@ if __name__ == '__main__':
     forex4you_list = make_hrefs_list(bd_dir + r'\forex4you hrefs.xlsx')
     input_lists = [make_hrefs_list(bd_dir + r'\litefinance hrefs.xlsx'),
                    make_hrefs_list(bd_dir + r'\forex4you hrefs.xlsx')]
-    lifefinance_xpathes = {
+    litefinance_xpathes = {
         'trader_name': fr'//div[@class = "page_header_part traders_body"]//h2'
     }
     forex4you_xpathes = {
@@ -532,13 +532,13 @@ if __name__ == '__main__':
                 )
                 forex4you.scrap_all()
             # elif 'litefinance' in href.value:
-            #     litefinance = Lifefinance(
+            #     litefinance = litefinance(
             #         current_dir,
             #         bd_dir,
             #         driver,
             #         href,
             #         'litefinance',
-            #         lifefinance_xpathes
+            #         litefinance_xpathes
             #     )
             #     litefinance.scrap_all()
     driver.quit()

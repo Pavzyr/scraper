@@ -3,11 +3,10 @@ import sys
 import ctypes
 import logging
 from selenium import webdriver
-from general_downloader import make_hrefs_list, Forex4you, Lifefinance
+from general_downloader import make_hrefs_list, Forex4you, Litefinance
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, \
-    QVBoxLayout, QLabel, QWidget, QProgressBar, QGridLayout, QStyleFactory, \
-    QPlainTextEdit
+    QVBoxLayout, QLabel, QWidget, QProgressBar, QStyleFactory
 from PyQt5.QtGui import QFont
 
 
@@ -48,32 +47,32 @@ class WorkerThread(QThread):
                                 forex4you_xpathes
                             )
                             forex4you.scrap_all()
-                        elif 'lifefinance' in href.value:
-                            lifefinance = Lifefinance(
+                        elif 'litefinance' in href.value:
+                            litefinance = Litefinance(
                                 current_dir,
                                 bd_dir,
                                 driver,
                                 href,
-                                'lifefinance',
-                                lifefinance_xpathes
+                                'litefinance',
+                                litefinance_xpathes
                             )
-                            lifefinance.scrap_all()
+                            litefinance.scrap_all()
                         i += 1
                         self.progress_update.emit(i, self.ex, self.max_iterations, i)
-            elif self.run_type == 'lifefinance':
-                for href in lifefinance_list:
+            elif self.run_type == 'litefinance':
+                for href in litefinance_list:
                     if href is None:
                         continue
-                    elif 'lifefinance' in href.value:
-                        lifefinance = Lifefinance(
+                    elif 'litefinance' in href.value:
+                        litefinance = Litefinance(
                             current_dir,
                             bd_dir,
                             driver,
                             href,
-                            'lifefinance',
-                            lifefinance_xpathes
+                            'litefinance',
+                            litefinance_xpathes
                         )
-                        lifefinance.scrap_all()
+                        litefinance.scrap_all()
                     i += 1
                     self.progress_update.emit(i, self.ex, self.max_iterations, i)
             elif self.run_type == 'forex4you':
@@ -113,12 +112,12 @@ class MyWindow(QMainWindow):
         self.widget.setLayout(layout)
 
         self.show_input_excel_button = QPushButton(
-            '   🧾 Открыть excel lifefinance', self)
+            '   🧾 Открыть excel litefinance', self)
         self.show_input_excel_button.setStyleSheet("text-align: left;")
         self.show_input_excel_button.setFont(QFont('Arial', 14))
         self.show_input_excel_button.clicked.connect(lambda: open_file(
-            "Открываю excel файл, где хранится список ссылок для lifefinance\n",
-            rf"{current_dir}\resources\БАЗА ДАННЫХ\lifefinance hrefs.xlsx"))
+            "Открываю excel файл, где хранится список ссылок для litefinance\n",
+            rf"{current_dir}\resources\БАЗА ДАННЫХ\litefinance hrefs.xlsx"))
         layout.addWidget(self.show_input_excel_button)
 
         self.show_input_excel_button1 = QPushButton(
@@ -139,12 +138,12 @@ class MyWindow(QMainWindow):
         layout.addWidget(self.show_log_button)
 
         self.show_output_excel_button = QPushButton(
-            '   📁 Открыть папку lifefinance', self)
+            '   📁 Открыть папку litefinance', self)
         self.show_output_excel_button.setFont(QFont('Arial', 14))
         self.show_output_excel_button.setStyleSheet("text-align: left;")
         self.show_output_excel_button.clicked.connect(lambda: open_folder(
             "Открываю директорию, где хранятся сформированные файлы excel\n",
-            rf"explorer.exe {current_dir}\resources\БАЗА ДАННЫХ\lifefinance"))
+            rf"explorer.exe {current_dir}\resources\БАЗА ДАННЫХ\litefinance"))
         layout.addWidget(self.show_output_excel_button)
 
         self.show_output_htm_button = QPushButton(
@@ -174,9 +173,9 @@ class MyWindow(QMainWindow):
         self.start_button.clicked.connect(self.run_all)
         layout.addWidget(self.start_button)
 
-        self.start_button_lifefanance = QPushButton('🚀 Запуск только lifefinance', self)
+        self.start_button_lifefanance = QPushButton('🚀 Запуск только litefinance', self)
         self.start_button_lifefanance.setFont(QFont('Arial', 14))
-        self.start_button_lifefanance.clicked.connect(self.run_lifefinance)
+        self.start_button_lifefanance.clicked.connect(self.run_litefinance)
         layout.addWidget(self.start_button_lifefanance)
 
         self.start_button_forex4you = QPushButton(
@@ -188,16 +187,14 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(self.widget)
 
     def run_all(self):
-        print(len(lifefinance_list))
-        print(len(forex4you_list))
-        max_iterations = len(lifefinance_list) + len(forex4you_list)
+        max_iterations = len(litefinance_list) + len(forex4you_list)
         self.progress_bar.setMaximum(max_iterations)
         self.start_operation(max_iterations, 'all')
 
-    def run_lifefinance(self):
-        max_iterations = len(lifefinance_list)
+    def run_litefinance(self):
+        max_iterations = len(litefinance_list)
         self.progress_bar.setMaximum(max_iterations)
-        self.start_operation(max_iterations, 'lifefinance')
+        self.start_operation(max_iterations, 'litefinance')
 
     def run_forex4you(self):
         max_iterations = len(forex4you_list)
@@ -249,11 +246,11 @@ logging.basicConfig(
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 bd_dir = current_dir + r'\resources\БАЗА ДАННЫХ'
-lifefinance_list = make_hrefs_list(bd_dir + r'\lifefinance hrefs.xlsx')
+litefinance_list = make_hrefs_list(bd_dir + r'\litefinance hrefs.xlsx')
 forex4you_list = make_hrefs_list(bd_dir + r'\forex4you hrefs.xlsx')
-input_lists = [make_hrefs_list(bd_dir + r'\lifefinance hrefs.xlsx'),
+input_lists = [make_hrefs_list(bd_dir + r'\litefinance hrefs.xlsx'),
                make_hrefs_list(bd_dir + r'\forex4you hrefs.xlsx')]
-lifefinance_xpathes = {
+litefinance_xpathes = {
     'trader_name': fr'//div[@class = "page_header_part traders_body"]//h2'
 }
 forex4you_xpathes = {
