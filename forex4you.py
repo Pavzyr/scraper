@@ -93,6 +93,7 @@ def forex4you_scrap(current_dir, href, months_in_numbers, stop_date, dict_for_tr
                     date_close.strftime('%Y.%m.%d %H:%M'),
                     price_close,
                     points,
+                    href.value
                 ]
         if date_close < stop_date:
             break

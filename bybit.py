@@ -108,6 +108,7 @@ def bybit_scrap(current_dir, href, stop_date, dict_for_traders):
                     date_close.strftime('%Y.%m.%d %H:%M'),
                     price_close,
                     "0",
+                    href.value,
                 ]
         if date_close < stop_date:
             break

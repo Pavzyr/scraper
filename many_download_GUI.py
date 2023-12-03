@@ -48,32 +48,32 @@ class WorkerThread(QThread):
                                 forex4you_xpathes
                             )
                             forex4you.scrap_all()
-                        elif 'litefinance' in href.value:
-                            litefinance = Lifefinance(
+                        elif 'lifefinance' in href.value:
+                            lifefinance = Lifefinance(
                                 current_dir,
                                 bd_dir,
                                 driver,
                                 href,
-                                'litefinance',
+                                'lifefinance',
                                 lifefinance_xpathes
                             )
-                            litefinance.scrap_all()
+                            lifefinance.scrap_all()
                         i += 1
                         self.progress_update.emit(i, self.ex, self.max_iterations, i)
             elif self.run_type == 'lifefinance':
-                for href in litefinance_list:
+                for href in lifefinance_list:
                     if href is None:
                         continue
-                    elif 'litefinance' in href.value:
-                        litefinance = Lifefinance(
+                    elif 'lifefinance' in href.value:
+                        lifefinance = Lifefinance(
                             current_dir,
                             bd_dir,
                             driver,
                             href,
-                            'litefinance',
+                            'lifefinance',
                             lifefinance_xpathes
                         )
-                        litefinance.scrap_all()
+                        lifefinance.scrap_all()
                     i += 1
                     self.progress_update.emit(i, self.ex, self.max_iterations, i)
             elif self.run_type == 'forex4you':
@@ -118,7 +118,7 @@ class MyWindow(QMainWindow):
         self.show_input_excel_button.setFont(QFont('Arial', 14))
         self.show_input_excel_button.clicked.connect(lambda: open_file(
             "Открываю excel файл, где хранится список ссылок для lifefinance\n",
-            rf"{current_dir}\resources\БАЗА ДАННЫХ\litefinance hrefs.xlsx"))
+            rf"{current_dir}\resources\БАЗА ДАННЫХ\lifefinance hrefs.xlsx"))
         layout.addWidget(self.show_input_excel_button)
 
         self.show_input_excel_button1 = QPushButton(
@@ -144,7 +144,7 @@ class MyWindow(QMainWindow):
         self.show_output_excel_button.setStyleSheet("text-align: left;")
         self.show_output_excel_button.clicked.connect(lambda: open_folder(
             "Открываю директорию, где хранятся сформированные файлы excel\n",
-            rf"explorer.exe {current_dir}\resources\БАЗА ДАННЫХ\litefinance"))
+            rf"explorer.exe {current_dir}\resources\БАЗА ДАННЫХ\lifefinance"))
         layout.addWidget(self.show_output_excel_button)
 
         self.show_output_htm_button = QPushButton(
@@ -188,12 +188,14 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(self.widget)
 
     def run_all(self):
-        max_iterations = len(litefinance_list) + len(forex4you_list)
+        print(len(lifefinance_list))
+        print(len(forex4you_list))
+        max_iterations = len(lifefinance_list) + len(forex4you_list)
         self.progress_bar.setMaximum(max_iterations)
         self.start_operation(max_iterations, 'all')
 
     def run_lifefinance(self):
-        max_iterations = len(litefinance_list)
+        max_iterations = len(lifefinance_list)
         self.progress_bar.setMaximum(max_iterations)
         self.start_operation(max_iterations, 'lifefinance')
 
@@ -244,11 +246,12 @@ logging.basicConfig(
             filemode='w',
             format='%(asctime)s, %(levelname)s, %(message)s'
         )
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 bd_dir = current_dir + r'\resources\БАЗА ДАННЫХ'
-litefinance_list = make_hrefs_list(bd_dir + r'\litefinance hrefs.xlsx'),
+lifefinance_list = make_hrefs_list(bd_dir + r'\lifefinance hrefs.xlsx')
 forex4you_list = make_hrefs_list(bd_dir + r'\forex4you hrefs.xlsx')
-input_lists = [make_hrefs_list(bd_dir + r'\litefinance hrefs.xlsx'),
+input_lists = [make_hrefs_list(bd_dir + r'\lifefinance hrefs.xlsx'),
                make_hrefs_list(bd_dir + r'\forex4you hrefs.xlsx')]
 lifefinance_xpathes = {
     'trader_name': fr'//div[@class = "page_header_part traders_body"]//h2'

@@ -44,6 +44,7 @@ class Scraper:
                                  'Время Закрытия': [],
                                  'Цена Закрытия': [],
                                  'Прибыль': [],
+                                 'Ссылка': [],
                                  }
         self.months_in_numbers = {"янв.": "01",
                                   "февр.": "02",
@@ -265,6 +266,7 @@ class Lifefinance(Scraper):
                             '%Y.%m.%d %H:%M'),
                         'Цена Закрытия': price_close,
                         'Прибыль': points,
+                        'Ссылка': self.href,
                     })
                     init_dict['df_for_trader'].loc[
                         len(init_dict['df_for_trader'])] = new_row
@@ -306,7 +308,7 @@ class Forex4you(Scraper):
                   )
             if count > 20:
                 count = 20
-            for l in list(range(1, count)):
+            for l in list(range(1, count+1)):
                 try:
                     currency = self.driver.find_element(
                         "xpath",
@@ -399,6 +401,7 @@ class Forex4you(Scraper):
                                 '%Y.%m.%d %H:%M'),
                             'Цена Закрытия': price_close,
                             'Прибыль': points,
+                            'Ссылка': self.href,
                         })
                         init_dict['df_for_trader'].loc[
                             len(init_dict['df_for_trader'])] = new_row
